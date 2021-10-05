@@ -2,9 +2,10 @@
 {
     public class UserConfig
     {
-        public bool UseNickname { get; set; }
-        public string Nickname { get; set; }
-        
-        // TODO: public ICollection<Article> SavedArticles { get; set; }
+        public int Id { get; set; }
+        public bool UseNickname { get; set; } = false;
+        public string Nickname { get; set; } = null;
+
+        // TODO: public ICollection<Article> SavedArticles { get; set; } = new List<Article>
     }
 }
