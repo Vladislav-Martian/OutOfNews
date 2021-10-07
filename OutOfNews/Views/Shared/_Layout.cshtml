@@ -11,14 +11,20 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark box-shadow mb-3">
-        <img src="~/favicon.svg" alt="Site icon" width="40" height="40">
-        <p class="h3 font-weight-bold font-italic text-white ml-2">Out Of News</p>
-        <form action="" class="search-bar">
-	        <input type="search" name="search" pattern=".*\S.*" placeholder="SEARCH" required class="search-input">
-	        <button class="search-btn" type="submit" hidden>
-		        <i class="fas fa-search"></i>
-	        </button>
-        </form>
+        <a asp-action="Index" asp-controller="Home"><img src="~/favicon.svg" alt="Site icon" width="40" height="40"></a>
+        <a asp-action="Index" asp-controller="Home"><p class="h3 font-weight-bold font-italic text-white ml-2">Out Of News</p></a>
+        <!--Account marker on right side of the header-->
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form method="post" asp-controller="Auth" asp-action="Logout">
+                <input class="btn-primary btn-outline-danger user-header-link" type="submit" value="@User.Identity.Name" title="Sign out!!!"/>
+            </form>
+        }
+        else
+        {
+            <a class="guest-header-link" asp-action="Login" asp-controller="Auth" title="Sign in"><b>@@Guest</b></a>
+        }
+        
         <!--Navigation links-->
         <div class="container collapse navbar-collapse">
             <ul class="navbar-nav">
@@ -34,11 +40,19 @@
 </header>
 <div class="container">
     <main role="main" class="pb-3">
+        <a href="#" class="scroll-down" address="true"></a>
+        <a href="#" class="scroll-up" address="true"></a>
         @RenderBody()
     </main>
 </div>
 
 <footer class="footer text-muted">
+    <form action="" class="search-bar">
+        <input type="search" name="search" pattern=".*\S.*" placeholder="SEARCH" required class="search-input">
+        <button class="search-btn" type="submit" hidden>
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
     <div class="container">
         &copy; 2021 - OutOfNews - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>

@@ -1,4 +1,15 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(function() {
+    $('.scroll-down').click (function() {
+        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+        return false;
+    });
+});
 
-// Write your JavaScript code.
+$(document).ready(function(){
+    $('#scroller').click(function () {
+        $('body,html').animate({
+            scrollTop: 0
+        }, 1000);
+        return false;
+    });
+});
