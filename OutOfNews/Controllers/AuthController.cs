@@ -72,7 +72,20 @@ namespace OutOfNews.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(
+                        string.Empty, 
+                        "This user does not exists. Check your login.");
+                    return View(model);
+                }
+                
+                var result = await _signInManager.PasswordSignInAsync(
+                    user.UserName, 
+                    model.Password, 
+                    model.RememberMe, 
+                    false);
                 if (result.Succeeded)
                 {
                     // is url external or not

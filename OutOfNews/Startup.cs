@@ -22,8 +22,8 @@ namespace OutOfNews
         public Startup(IConfiguration config)
         {
             var cbuilder = new ConfigurationBuilder()
-                .AddConfiguration(config)
-                .AddJsonFile("appsecrets.json"); // contains secret data
+                .AddJsonFile("appsecrets.json") // contains secret data
+                .AddConfiguration(config);
             Configuration = cbuilder.Build();
         }
 
