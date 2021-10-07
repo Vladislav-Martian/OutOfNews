@@ -1,41 +1,38 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace OutOfNews.Models
 {
-    public class User
+    public class User: IdentityUser
     {
-        public int Id { get; set; }
-        public string Mail { get; set; }
-        public string Pass { get; set; }
+
+        /// <summary>
+        /// Alternative name, that can be shown as name.
+        /// </summary>
+        public string NickName { get; set; } = null;
         
-        public string Name { get; set; } = null;
-        public DateTime? BornDate { get; set; } = null;
+        /// <summary>
+        /// Born date, for managing NSFW content.
+        /// </summary>
+        public DateTime? Born { get; set; } = null;
+        
 
-        public int UserConfigId { get; set; }
-        public UserConfig UserConfig { get; set; }
-
-        #region Tough model methods
+        #region Methods
 
         public bool IsAdult(int minimal = 16, bool alter = false)
         {
-            if (BornDate == null) return alter; // Use config Restrictions.UnauthorizedAdult
-            var diff = DateTime.Now - BornDate;
-            return ((double)minimal * 365.25) < diff.Value.TotalDays;
+            if (Born == null) return alter; // Use config Restrictions.UnauthorizedAdult
+            var diff = DateTime.Now - Born.Value;
+            return ((double)minimal * 365.25) < diff.TotalDays;
         }
 
         public string GetNameToShow()
         {
-            if (UserConfig != null && UserConfig.UseNickname && !string.IsNullOrEmpty(UserConfig.Nickname))
+            if (!string.IsNullOrEmpty(NickName))
             {
-                return UserConfig.Nickname;
+                return NickName;
             }
-
-            if (!string.IsNullOrEmpty(Name))
-            {
-                return Name;
-            }
-
-            return Mail;
+            return !string.IsNullOrEmpty(UserName) ? UserName : Email;
         }
 
         #endregion

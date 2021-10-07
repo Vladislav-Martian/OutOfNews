@@ -1,132 +1,106 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OutOfNews.Contexts;
-using OutOfNews.FormModels;
 using OutOfNews.Models;
+using OutOfNews.ViewModels;
 
 namespace OutOfNews.Controllers
 {
-    public class AuthController: Controller
+    public class AuthController : Controller
     {
-        #region Injection
-        private AuthDbContext db;
-
-        public AuthController(AuthDbContext context)
+        #region Inject
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            db = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
         #endregion
-        
-        #region GET
-        
+        #region Authentication center
+        // GET
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return RedirectToAction("Register");
+        }
+        #endregion
+
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
-
-        [HttpGet]
-        public IActionResult Login()
+        
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            return View();
+            if(ModelState.IsValid)
+            {
+                User user = new User { Email = model.Email, UserName = model.Username, Born=model.Born};
+                // new user
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // set cookie
+                    await _signInManager.SignInAsync(user, false);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            return View(model);
         }
         
+        [HttpGet]
+        public IActionResult Login(string returnUrl = null)
+        {
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+                if (result.Succeeded)
+                {
+                    // is url external or not
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Sorry, but your login or password are wrong :<(");
+                }
+            }
+            return View(model);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Auth");
+            // Remove cookies
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
-
-        #endregion
-        
-        #region POST
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                User user = await db.Users
-                    .FirstOrDefaultAsync(u => u.Mail == model.Email 
-                                              && u.Pass == model.Password);
-                if (user != null)
-                {
-                    await Authenticate(model.Email);
- 
-                    return RedirectToAction("Index", "Home");
-                }
-                ModelState.AddModelError("", "Wrong auth data!");
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                User user = await db.Users.FirstOrDefaultAsync(u => u.Mail == model.Email);
-                if (user == null)
-                {
-                    var newUserConfig = new UserConfig
-                    {
-                        Nickname = model.Nickname,
-                        UseNickname = !string.IsNullOrEmpty(model.Nickname)
-                    };
-
-                    var newUser = new User
-                    {
-                        Mail = model.Email,
-                        Pass = model.Password,
-                        Name = model.Name,
-                        BornDate = model.BornDate,
-                        UserConfig = newUserConfig
-                    };
-
-                    db.Users.Add(newUser);
-                    db.UserConfigs.Add(newUserConfig);
-                    
-                    await db.SaveChangesAsync();
- 
-                    await Authenticate(model.Email);
- 
-                    return RedirectToAction("Index", "Home");
-                }
-
-                ModelState.AddModelError("", "Wrong auth data!");
-            }
-            return View(model);
-        }
-        
-        #endregion
-
-        #region Authentification
-
-        private async Task Authenticate(string userName)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
-            };
-            
-            ClaimsIdentity id = new ClaimsIdentity(
-                claims, 
-                "ApplicationCookie", 
-                ClaimsIdentity.DefaultNameClaimType, 
-                ClaimsIdentity.DefaultRoleClaimType);
-            
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-        }
-
-        #endregion
         
     }
 }

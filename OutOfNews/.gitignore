@@ -1,0 +1,4 @@
+﻿# Application secrets as environment variables
+.env
+# Secrets in json file
+appsecrets.json
