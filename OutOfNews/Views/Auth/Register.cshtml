@@ -5,35 +5,36 @@
     Layout = "_Layout";
 }
 
-<h2>Sign up</h2>
+<a asp-controller="Auth" asp-action="Login"><h1 data-defaultText="Sign Up" id="register">Sign Up</h1></a>
+<hr/>
 <form method="post" asp-controller="Auth" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
     <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
+        <label asp-for="Email" class="auth-label"></label><br />
+        <input asp-for="Email" class="auth-input"/>
         <span asp-validation-for="Email"></span>
     </div>
     <div>
-        <label asp-for="Username"></label><br />
-        <input asp-for="Username" />
+        <label asp-for="Username" class="auth-label"></label><br />
+        <input asp-for="Username" class="auth-input"/>
         <span asp-validation-for="Username"></span>
     </div>
     <div>
-        <label asp-for="Born"></label><br />
-        <input asp-for="Born" />
+        <label asp-for="Born" class="auth-label"></label><br />
+        <input asp-for="Born" class="auth-input"/>
         <span asp-validation-for="Born"></span>
     </div>
     <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
+        <label asp-for="Password" class="auth-label"></label><br />
+        <input asp-for="Password" class="auth-input"/>
         <span asp-validation-for="Password"></span>
     </div>
     <div>
-        <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
+        <label asp-for="PasswordConfirm" class="auth-label"></label><br />
+        <input asp-for="PasswordConfirm" class="auth-input"/>
         <span asp-validation-for="PasswordConfirm"></span>
     </div>
     <div>
-        <input type="submit" value="Sign up" />
+        <input type="submit" value="Sign up" class="btn-dark auth-submit"/>
     </div>
 </form>

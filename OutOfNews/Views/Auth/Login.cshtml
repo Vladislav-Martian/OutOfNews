@@ -5,25 +5,28 @@
     Layout = "_Layout";
 }
 
-<h2>Sign in</h2>
+<a asp-controller="Auth" asp-action="Register"><h1 data-defaultText="Sign In" id="login">Sign In</h1></a>
+<hr/>
 <form method="post" asp-controller="Auth" asp-action="Login"
       asp-route-returnUrl="@Model.ReturnUrl">
     <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
+    <div class="d-block">
+        <label asp-for="Email" class="auth-label"></label><br />
+        <input asp-for="Email"  class="auth-input"/>
         <span asp-validation-for="Email"></span>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
+    <div class="d-block">
+        <label asp-for="Password" class="auth-label"></label><br />
+        <input asp-for="Password"  class="auth-input"/>
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
-        <label asp-for="RememberMe"></label><br />
-        <input asp-for="RememberMe" />
+    <div class="d-block">
+        <span class="switch">
+            <label asp-for="RememberMe" class="auth-label"></label><br/>
+            <input asp-for="RememberMe" class="toggle"/>
+        </span>
     </div>
-    <div>
-        <input type="submit" value="Sign in" />
+    <div class="d-block">
+        <input type="submit" value="Sign in" class="btn-dark auth-submit"/>
     </div>
 </form>

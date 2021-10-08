@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OutOfNews.Extensions;
 using OutOfNews.Models;
 using OutOfNews.ViewModels;
 
@@ -24,7 +26,14 @@ namespace OutOfNews.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return RedirectToAction("Register");
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Me");
+            }
+            else
+            {
+                return RedirectToAction("Register");
+            }
         }
         #endregion
 
@@ -114,6 +123,12 @@ namespace OutOfNews.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Me()
+        {
+            return View(User.GetLoggedInUser(_userManager));
+        }
     }
 }

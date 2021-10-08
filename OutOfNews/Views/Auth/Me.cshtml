@@ -1,0 +1,12 @@
+﻿@model OutOfNews.Models.User
+@using OutOfNews.Extensions
+
+@{
+    ViewBag.Title = "Me";
+    Layout = "_Layout";
+}
+<h2><b>ACCOUNT: </b>@Model.UserName</h2>
+<h2><b>NICKNAME: </b>@Model.GetNameToShow()</h2>
+<h3><b>EMAIL: </b>@Model.Email</h3>
+<h4><b>BORN: </b>@Model.Born.ToString()</h4>
+<hr/>
