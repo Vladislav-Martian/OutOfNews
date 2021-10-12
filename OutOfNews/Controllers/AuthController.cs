@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OutOfNews.Extensions;
 using OutOfNews.Models;
 using OutOfNews.ViewModels;
@@ -15,10 +16,17 @@ namespace OutOfNews.Controllers
         #region Inject
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration Config;
+        public AuthController(UserManager<User> userManager, 
+            SignInManager<User> signInManager, 
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+            Config = config;
         }
         #endregion
         #region Authentication center
@@ -26,7 +34,7 @@ namespace OutOfNews.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity?.IsAuthenticated ?? false)
             {
                 return RedirectToAction("Me");
             }
@@ -53,6 +61,7 @@ namespace OutOfNews.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, Config["Roles:DefaultRole"]);
                     // set cookie
                     await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
@@ -123,6 +132,42 @@ namespace OutOfNews.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+        
+        // Change password page
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View("ChangePassword");
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        [HttpDelete] // partial change of server resource
+        [Authorize]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = User.GetLoggedInUser(_userManager);
+            await _signInManager.SignOutAsync();
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction("Index", "Home");
+        }
+
+        #region Edit-account
 
         [HttpGet]
         [Authorize]
@@ -130,5 +175,92 @@ namespace OutOfNews.Controllers
         {
             return View(User.GetLoggedInUser(_userManager));
         }
+
+        
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteNickname()
+        {
+            var user = User.GetLoggedInUser(_userManager);
+            user.NickName = null;
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction("Me");
+        }
+        
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeletePhone()
+        {
+            var user = User.GetLoggedInUser(_userManager);
+            user.PhoneNumber = null;
+            user.PhoneNumberConfirmed = false;
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction("Me");
+        }
+        
+        
+        [HttpPost] // partial change of server resource
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = User.GetLoggedInUser(_userManager);
+                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("ChangePassword", model);
+                }
+                return RedirectToAction("Index");
+            }
+            return View("ChangePassword", model);
+        }
+        
+        [HttpPost] // partial change of server resource
+        [Authorize]
+        public async Task<IActionResult> ChangeName(ChangeNameViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = User.GetLoggedInUser(_userManager);
+                user.NickName = model.NickName;
+                await _userManager.UpdateAsync(user);
+                return RedirectToAction("Index");
+            }
+            return View("Me");
+        }
+        
+        [HttpPost] // partial change of server resource
+        [Authorize]
+        public async Task<IActionResult> ChangeContacts(ChangeContactsViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = User.GetLoggedInUser(_userManager);
+
+                if (user.Email != model.Email)
+                {
+                    var tokenMail = await _userManager.GenerateChangeEmailTokenAsync(user, model.Email);
+                    await _userManager.ChangeEmailAsync(user, model.Email, tokenMail);
+                }
+                
+                if (user.PhoneNumber != model.PhoneNumber)
+                {
+                    var tokenPhone = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
+                    await _userManager.ChangePhoneNumberAsync(user, model.PhoneNumber, tokenPhone);
+                }
+                
+                return RedirectToAction("Index");
+            }
+            return View("Me");
+        }
+
+        #endregion
+        
     }
 }

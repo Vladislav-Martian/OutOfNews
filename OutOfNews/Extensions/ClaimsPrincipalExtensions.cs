@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -50,6 +52,16 @@ namespace OutOfNews.Extensions
             var task = Task.Run(async () => await userManager.FindByIdAsync(id));
             task.Wait();
             return task.Result;
+        }
+
+        public static List<string> GetLoggedInUserRoles(this ClaimsPrincipal principal)
+        {
+            var userIdentity = (ClaimsIdentity)principal.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            return claims.Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value)
+                .ToList();
         }
     }
 }

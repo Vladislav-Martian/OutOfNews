@@ -1,12 +1,117 @@
 ﻿@model OutOfNews.Models.User
 @using OutOfNews.Extensions
+@using Microsoft.Extensions.Configuration
+@using OutOfNews.Models
+@using Microsoft.AspNetCore.Identity
+@inject IConfiguration _configuration
 
 @{
     ViewBag.Title = "Me";
-    Layout = "_Layout";
+    ViewBag.DefaultAdult = bool.Parse(_configuration["Restrictions:UnauthorizedAdult"]);
+    ViewBag.AdultAge = int.Parse(_configuration["Restrictions:NSFWAge"]);
 }
-<h2><b>ACCOUNT: </b>@Model.UserName</h2>
-<h2><b>NICKNAME: </b>@Model.GetNameToShow()</h2>
-<h3><b>EMAIL: </b>@Model.Email</h3>
-<h4><b>BORN: </b>@Model.Born.ToString()</h4>
+
+<h1>Account page «@Model.Email» as «@Model.GetNameToShow()»</h1>
+<p>here you can change your nickname, email or phone, password.</p>
 <hr/>
+<div class="container flex-column me-partial">
+    <!--Current user data-->
+    <div class="container d-flex prop-con">
+        <span class="h3 me-prop">User name:&nbsp</span>
+        <span class="h3 me-val">@Model.UserName</span>
+    </div>
+    
+    @if (Model.NickName != null)
+    {
+        <div class="container d-flex prop-con">
+            <span class="h3 me-prop">Nick Name:&nbsp</span>
+            <span class="h3 me-val">@Model.NickName</span>
+            <form method="post" asp-controller="Auth" asp-action="DeleteNickname">
+                <input type="submit" value="Remove" class="btn-danger me-nickname-remove"/>
+            </form>
+        </div>
+    }
+    
+    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+    {
+        <div class="container d-flex prop-con">
+            <span class="h3 me-prop">Phone Number:&nbsp</span>
+            <span class="h3 me-val">@Model.PhoneNumber</span>
+            <form method="post" asp-controller="Auth" asp-action="DeletePhone">
+                <input type="submit" value="Remove" class="btn-danger me-nickname-remove"/>
+            </form>
+        </div>
+    }
+    
+    
+    <div class="container d-flex prop-con">
+        <span class="h3 me-prop">Email:&nbsp</span>
+        <span class="h3 me-val">@Model.Email</span>
+    </div>
+    
+    <div class="container d-flex prop-con">
+        <span class="h3 me-prop">Is adult?&nbsp</span>
+        <span class="h3 me-val">@(Model.IsAdult(ViewBag.AdultAge, ViewBag.DefaultAdult) ? "Yes" : "No")</span>
+    </div>
+    <div class="container d-flex prop-con">
+        <span class="h3 me-prop">Roles list:&nbsp</span>
+        <ul>
+            @foreach (var role in User.GetLoggedInUserRoles())
+            {
+                <li class="h3">@role</li>
+            }
+        </ul>
+    </div>
+    
+    <hr/>
+</div>
+
+@*Editing account allowed if it isn`t Anonas*@
+@if (@Model.NormalizedEmail == "ANONAS@NOMAIL.COM")
+{
+   
+    <h3>You can not change ANONAS`es account. It`s fixed forever.</h3>
+}
+else
+{
+    <div class="container me-edits">
+       <!--Change Name-->
+       <h3>Edit name</h3>
+       <form method="post" asp-controller="Auth" asp-action="ChangeName">
+           <div asp-validation-summary="ModelOnly"></div>
+           <div>
+               <label asp-for="NickName" class="auth-label"></label><br />
+               <input asp-for="NickName" class="auth-input"/>
+               <span asp-validation-for="NickName"></span>
+           </div>
+           <div>
+               <input type="submit" value="Change Nickname" class="btn-dark auth-submit"/>
+           </div>
+       </form>
+    </div>
+    <div class="container me-edits">
+        <!--Change Email-->
+        <h3>Edit Contacts</h3>
+        <form method="post" asp-controller="Auth" asp-action="ChangeContacts">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div>
+                <label asp-for="Email" class="auth-label"></label><br />
+                <input asp-for="Email" class="auth-input"/>
+                <span asp-validation-for="Email"></span>
+            </div>
+            <div>
+                <label asp-for="PhoneNumber" class="auth-label"></label><br />
+                <input asp-for="PhoneNumber" class="auth-input"/>
+                <span asp-validation-for="PhoneNumber"></span>
+            </div>
+            <div>
+                <input type="submit" value="Change Contacts" class="btn-dark auth-submit"/>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <a asp-controller="Auth" asp-action="ChangePassword" class="me-change-password-link">Change account password</a>
+    </div>
+}
+
+    
