@@ -1,0 +1,26 @@
+﻿@using OutOfNews.Models
+@using OutOfNews.Extensions
+@using Microsoft.AspNetCore.Identity
+@model OutOfNews.Models.User
+@inject UserManager<User> _userManager
+
+@{
+    ViewBag.Title = "Account delete";
+}
+
+<h2 class="d-block align-content-center w-auto">Danger, here you can delete your account!</h2>
+<tr/>
+@if (@User.GetLoggedInUser<User>(_userManager).NormalizedEmail != "ANONAS@NOMAIL.COM")
+{
+    <div class="d-flex flex-xl-column-reverse">
+        <button class="delete-acc-button da-1">Do you want to delete your account?</button>
+        <button class="delete-acc-button da-2">Sure?</button>
+        <form method="post" asp-controller="Auth" asp-action="DeleteAccountAction" class="da-hide align-content-center">
+            <input type="submit" value="Last chance, after clicking it account will be deleted!!!" class="delete-acc-button da-3"/>
+        </form>
+    </div>
+}
+else
+{
+    <h3>Sorry, but Anonas`es account is fixed</h3>
+}

@@ -140,26 +140,31 @@ namespace OutOfNews.Controllers
         {
             return View("ChangePassword");
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        [HttpDelete] // partial change of server resource
+
+        [HttpGet]
         [Authorize]
-        public async Task<IActionResult> DeleteAccount()
+        public IActionResult DeleteAccount()
+        {
+            return View("DeleteAccount");
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> DeleteAccountAction()
         {
             var user = User.GetLoggedInUser(_userManager);
             await _signInManager.SignOutAsync();

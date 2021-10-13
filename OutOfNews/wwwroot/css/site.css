@@ -422,3 +422,35 @@ a:active {
     text-align: center;
     margin-top: 50px;
 }
+
+.delete-acc-button {
+    font-size: 20px;
+    font-weight: 900;
+    font-style: italic;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.da-1 {
+    border: 2px solid rgba(0, 255, 128, 0.75);
+    background-color: rgba(0, 255, 42, 0.2);
+    color: #00ff38;
+}
+
+.da-2 {
+    border: 2px solid rgba(255, 255, 0, 0.75);
+    background-color: rgba(200, 200, 0, 0.2);
+    color: #ffe300;
+    display: none;
+}
+
+.da-3 {
+    border: 2px solid rgba(255, 41, 41, 0.75);
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff0000;
+}
+
+.da-hide {
+    display: none;
+}

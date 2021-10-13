@@ -37,3 +37,11 @@ $('#login').hover(
         $this.text($this.data('defaultText'));
     }
 );
+
+$(".da-1").click(function() {
+    $(this).next(".da-2").toggle();
+});
+
+$(".da-2").click(function() {
+    $(this).next(".da-hide").toggle();
+});
