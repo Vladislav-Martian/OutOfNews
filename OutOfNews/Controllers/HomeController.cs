@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using OutOfNews.Contexts;
+using OutOfNews.Extensions;
+using OutOfNews.Models;
 using OutOfNews.ViewModels;
 
 namespace OutOfNews.Controllers
@@ -13,15 +15,44 @@ namespace OutOfNews.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private AppDbContext _db;
+        private UserManager<User> _userManager;
+        private IConfiguration Configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext db, UserManager<User> userManager, IConfiguration configuration)
         {
             _logger = logger;
+            _db = db;
+            _userManager = userManager;
+            Configuration = configuration;
         }
 
         public IActionResult Index()
         {
-            return View();
+            List<Article> articles;
+            if (User.Identity != null 
+                && User.Identity.IsAuthenticated
+                && User.GetLoggedInUser(_userManager).IsAdult(
+                    int.Parse(Configuration["Restrictions:NSFWAge"]),
+                    bool.Parse(Configuration["Restrictions:UnauthorizedAdult"])))
+            {
+                articles = _db.Articles
+                    .AsQueryable()
+                    .OrderByDescending(a => a.CreatedAt)
+                    .ThenByDescending(a => a.Id)
+                    .ToList();
+            }
+            else
+            {
+                articles = _db.Articles
+                    .AsQueryable()
+                    .Where(a => !a.Nsfw)
+                    .OrderByDescending(a => a.CreatedAt)
+                    .ThenByDescending(a => a.Id)
+                    .ToList();
+            }
+            
+            return View(articles);
         }
 
         public IActionResult Privacy()

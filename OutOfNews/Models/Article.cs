@@ -5,6 +5,12 @@ namespace OutOfNews.Models
 {
     public class Article
     {
+        public int Id { get; set; }
+        
+        public string AuthorId { get; set; }
+        
+        // Default
+        
         public bool Nsfw { get; set; } = false;
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
