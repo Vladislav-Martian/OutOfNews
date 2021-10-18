@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -163,6 +164,7 @@ namespace OutOfNews.Controllers
         
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> DeleteAccountAction()
         {
@@ -178,11 +180,13 @@ namespace OutOfNews.Controllers
         [Authorize]
         public IActionResult Me()
         {
-            return View(User.GetLoggedInUser(_userManager));
+            var um = User.GetLoggedInUser(_userManager);
+            return View(um);
         }
 
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> DeleteNickname()
         {
@@ -193,6 +197,7 @@ namespace OutOfNews.Controllers
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> DeletePhone()
         {
@@ -205,6 +210,7 @@ namespace OutOfNews.Controllers
         
         
         [HttpPost] // partial change of server resource
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -227,6 +233,7 @@ namespace OutOfNews.Controllers
         }
         
         [HttpPost] // partial change of server resource
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> ChangeName(ChangeNameViewModel model)
         {
@@ -241,6 +248,7 @@ namespace OutOfNews.Controllers
         }
         
         [HttpPost] // partial change of server resource
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> ChangeContacts(ChangeContactsViewModel model)
         {
@@ -265,6 +273,23 @@ namespace OutOfNews.Controllers
             return View("Me");
         }
 
+        [HttpPost] // partial change of server resource
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ChangeRole(string userId, string role)
+        {
+            if (!(User.IsInRole("moder") || User.IsInRole("admin")))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            User user = await _userManager.FindByIdAsync(userId);
+            await _userManager.AddToRoleAsync(user, role);
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+        
+        
         #endregion
         
     }

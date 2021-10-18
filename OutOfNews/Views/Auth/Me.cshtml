@@ -1,9 +1,9 @@
 ﻿@model OutOfNews.Models.User
-@using OutOfNews.Extensions
 @using Microsoft.Extensions.Configuration
 @using OutOfNews.Models
 @using Microsoft.AspNetCore.Identity
 @inject IConfiguration _configuration
+@inject UserManager<User> _userManager
 
 @{
     ViewBag.Title = "Me";
@@ -56,7 +56,7 @@
     <div class="container d-flex prop-con">
         <span class="h3 me-prop">Roles list:&nbsp</span>
         <ul>
-            @foreach (var role in User.GetLoggedInUserRoles())
+            @foreach (var role in await _userManager.GetRolesAsync(Model))
             {
                 <li class="h3">@role</li>
             }
@@ -113,7 +113,7 @@ else
         <a asp-controller="Auth" asp-action="ChangePassword" class="me-change-password-link">Change account password</a>
     </div>
     <div class="container">
-        <a asp-controller="Auth" asp-action="DeleteAccount" class="me-change-password-link">Delete qaccount page</a>
+        <a asp-controller="Auth" asp-action="DeleteAccount" class="me-change-password-link">Delete account page</a>
     </div>
 }
 

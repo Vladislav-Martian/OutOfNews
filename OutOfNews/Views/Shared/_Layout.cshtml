@@ -37,6 +37,18 @@
                 <li class="nav-item active">
                     <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy <span class="sr-only">(current)</span></a>
                 </li>
+                @if (User.IsInRole("moder") || User.IsInRole("admin"))
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Requests" asp-action="List">Requests <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Requests" asp-action="Index">Request <span class="sr-only">(current)</span></a>
+                    </li>
+                }
             </ul>
         </div>
     </nav>

@@ -301,13 +301,25 @@ a:active {
     text-align: left;
     padding-left: 36px;
     height: 36px;
-    width: 240px;
+    min-width: 240px;
     transition: all .2s ease-in;
 }
 
+textarea.auth-input {
+    min-width: 560px;
+    min-height: 240px;
+    transition: all .4s ease-in;
+}
+
 .auth-input:focus, .auth-input:hover {
-    width: 360px;
+    min-width: 360px;
     transition: all .1s ease-in;
+}
+
+textarea.auth-input:focus, textarea.auth-input:hover {
+    min-width: 720px;
+    min-height: 240px;
+    transition: all .5s ease-in;
 }
 
 .auth-submit {
@@ -453,4 +465,60 @@ a:active {
 
 .da-hide {
     display: none;
+}
+
+.request-box {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 36px;
+    margin: 6px 0;
+    padding: 36px 36px;
+    min-height: 60px;
+}
+
+.request-sender {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 36px;
+    padding: 6px 36px;
+}
+
+.request-field {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 36px;
+    padding: 6px 36px;
+    margin: 6px 0;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+.request-field:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-sizing: border-box;
+}
+
+
+table, th, td {
+    border: 1px solid #969696;
+    border-collapse: collapse;
+}
+
+.up-left-link {
+    display: inline-block;
+    position: absolute;
+    left: 2%;
+    right: revert;
+    top: 64px;
+    color: #fff !important;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.delete-request-button {
+    display: inline-block;
+    position: relative;
+    left: revert;
+    right: -98%;
+    top: -12px;
+    height: 1.8em;
+    width: 1.8em;
+    border-radius: 24px;
 }

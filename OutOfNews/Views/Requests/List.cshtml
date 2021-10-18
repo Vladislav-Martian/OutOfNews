@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OutOfNews.Extensions
+@using OutOfNews.Models
+@model List<OutOfNews.Models.ModerationRequest>
+@inject UserManager<User> _userManager
+
+@{
+    ViewBag.Title = "Requests list";
+}
+
+<h2>Requests:</h2>
+@if (Model.Count <= 0)
+{
+    <h3>Empty...</h3>
+}
+else
+{
+    <h3>@Model.Count.ToString()</h3>
+}
+
+<b>
+    <a asp-controller="Requests" asp-action="Index" class="btn-dark btn-outline-danger user-header-link up-left-link">Send request</a>
+</b>
+
+@foreach (var request in Model)
+{
+
+    var user = await _userManager.FindByIdAsync(request.UserId);
+    <div class="container request-box">
+        @* Deletion button *@
+        <form asp-controller="Requests" asp-action="RemoveRequest" class="w-100">
+            <input name="requestId" type="hidden" value="@request.Id.ToString()"/>
+            <input type="submit" value="" class="btn-dark btn-outline-danger delete-request-button">
+        </form>
+
+        <div class="container-fluid request-sender">
+            <b>Sent by:</b>
+            «@(user.GetNameToShow() ?? "unknown user")» : «@(user.Email ?? "unknown email")»
+        </div>
+        <div class="container-fluid request-field">
+            <p class="h6">Date: @request.CreatedAt.ToString() // Type: @request.RequestVariant.GetType().GetEnumName(request.RequestVariant)</p>
+        </div>
+        <div class="container-fluid request-field">
+            <p class="h3">@request.Heading</p>
+        </div>
+        <div class="container-fluid request-field">
+            <markdown>@request.Message</markdown>
+        </div>
+        
+        @if (request.RequestVariant == AdminRequestVariant.RoleChange)
+        {
+            <div class="container-fluid request-field">
+                <form asp-controller="Auth" asp-action="ChangeRole" class="w-100">
+                    <input name="userId" type="hidden" value="@(User.GetLoggedInUserId<string>())"/>
+                    <select name="role">
+                        <option value="reader">reader</option>
+                        <option value="author">author</option>
+                        <option value="moder">moder</option>
+                        <option value="admin">admin</option>
+                    </select>
+                    <input type="submit" value="Grant" class="btn-dark btn-outline-danger">
+                </form>
+            </div>
+        }
+    </div>
+}

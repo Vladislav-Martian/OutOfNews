@@ -27,7 +27,7 @@ namespace OutOfNews.Seeders
             {
                 await roleManager.CreateAsync(new IdentityRole("reader"));
             }
-            if (await userManager.FindByNameAsync(anonymousWriterLogin) == null)
+            if (await userManager.FindByEmailAsync(anonymousWriterLogin) == null)
             {
                 User anonas = new User
                 {
@@ -40,7 +40,23 @@ namespace OutOfNews.Seeders
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(anonas, "author");
-                    await userManager.AddToRoleAsync(anonas, "reader");
+                }
+            }
+
+            if (await userManager.FindByEmailAsync("admin@nomail.com") == null)
+            {
+                //TODO: Remove admin account seed
+                User admin = new User
+                {
+                    Email = "admin@nomail.com", 
+                    UserName = "Admin",
+                    Born = new DateTime(1998, 1, 1),
+                    EmailConfirmed = true
+                };
+                IdentityResult result = await userManager.CreateAsync(admin, "0admin");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "admin");
                 }
             }
         }

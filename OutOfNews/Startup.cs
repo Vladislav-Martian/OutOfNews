@@ -38,6 +38,11 @@ namespace OutOfNews
             {
                 options.UseNpgsql(Configuration["DBCONNECTION"]);
             });
+
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseNpgsql(Configuration["DBCONNECTION"]);
+            });
             
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>()
@@ -71,7 +76,7 @@ namespace OutOfNews
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
                 options.LoginPath = "/Auth/Login";
-                options.AccessDeniedPath = "/Auth/AccessDenied";
+                options.AccessDeniedPath = "/Auth/Login";
                 options.SlidingExpiration = true;
             });
             

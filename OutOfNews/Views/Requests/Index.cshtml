@@ -1,0 +1,30 @@
+﻿@model RequestViewModel
+@{
+    ViewBag.Title = "Admin Request";
+}
+
+<h2>Admin Request</h2>
+<div class="container-fluid request-container">
+    <form method="post" asp-controller="Requests" asp-action="SendRequest">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <label asp-for="Heading" class="auth-label"></label><br/>
+            <input asp-for="Heading" class="auth-input"/>
+            <span asp-validation-for="Heading"></span>
+        </div>
+        <div>
+            <label asp-for="Message" class="auth-label"></label><br/>
+            <textarea asp-for="Message" class="auth-input"></textarea>
+            <span asp-validation-for="Message"></span>
+        </div>
+        <div>
+            <label asp-for="RequestVariant" class="auth-label"></label><br/>
+            <select asp-for="RequestVariant" asp-items="Html.GetEnumSelectList<OutOfNews.Models.AdminRequestVariant>()">
+            </select>
+            <span asp-validation-for="Message"></span>
+        </div>
+        <div>
+            <input type="submit" value="Send" class="btn-dark auth-submit"/>
+        </div>
+    </form>
+</div>
