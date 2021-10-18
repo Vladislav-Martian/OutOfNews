@@ -7,6 +7,7 @@ namespace OutOfNews.Contexts
     {
         #region Tables
         public DbSet<ModerationRequest> ModerationRequests { get; set; }
+        public DbSet<Article> Articles { get; set; }
 
         #endregion
         
