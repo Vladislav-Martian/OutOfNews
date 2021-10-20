@@ -27,29 +27,37 @@ namespace OutOfNews.Controllers
             Configuration = configuration;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int id = 1)
         {
-            List<Article> articles;
+            PaginatedItemsViewModel<Article> articles;
             if (User.Identity != null 
                 && User.Identity.IsAuthenticated
                 && User.GetLoggedInUser(_userManager).IsAdult(
                     int.Parse(Configuration["Restrictions:NSFWAge"]),
                     bool.Parse(Configuration["Restrictions:UnauthorizedAdult"])))
             {
-                articles = _db.Articles
-                    .AsQueryable()
-                    .OrderByDescending(a => a.CreatedAt)
-                    .ThenByDescending(a => a.Id)
-                    .ToList();
+                // adult
+                articles = new PaginatedItemsViewModel<Article>(
+                    _db.Articles
+                        .AsQueryable()
+                        .OrderByDescending(x => x.CreatedAt)
+                        .ThenByDescending(x => x.Id))
+                {
+                    Page = id // view page
+                };
             }
             else
             {
-                articles = _db.Articles
-                    .AsQueryable()
-                    .Where(a => !a.Nsfw)
-                    .OrderByDescending(a => a.CreatedAt)
-                    .ThenByDescending(a => a.Id)
-                    .ToList();
+                // not adult
+                articles = new PaginatedItemsViewModel<Article>(
+                    _db.Articles
+                        .AsQueryable()
+                        .Where(a => !a.Nsfw)
+                        .OrderByDescending(x => x.CreatedAt)
+                        .ThenByDescending(x => x.Id))
+                {
+                    Page = id // view page
+                };
             }
             
             return View(articles);

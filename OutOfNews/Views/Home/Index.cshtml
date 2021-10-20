@@ -1,32 +1,85 @@
 ﻿@using OutOfNews.Models
 @using Microsoft.AspNetCore.Identity
-@model List<OutOfNews.Models.Article>
+@using Microsoft.Extensions.Configuration
+@using OutOfNews.Extensions
+@model PaginatedItemsViewModel<OutOfNews.Models.Article>
 @inject UserManager<User> _userManager
+@inject IConfiguration Configuration
+
 
 @{
     ViewData["Title"] = "Home Page";
+
+    var allows = (User.Identity?.IsAuthenticated ?? false) && User.GetLoggedInUser(_userManager)
+        .IsAdult(int.Parse(Configuration["Restrictions:NSFWAge"]),
+                    bool.Parse(Configuration["Restrictions:UnauthorizedAdult"]));
+
 }
 
-<h2>Articles:
-@if (Model.Count <= 0)
+@*NSFW button*@
+@if (allows)
 {
-    @:Empty...
+    <div class="d-flex w-25 position-absolute float-left l-10">
+        
+        @if (Context.Request.Cookies.ContainsKey("nsfw-allow") 
+             && Context.Request.Cookies["nsfw-allow"] == "true")
+        {
+            <input type="checkbox" class="d-inline-block mr-2 toggle" id="nsfw-toggle" checked>
+        }
+        else
+        {
+            <input type="checkbox" class="d-inline-block mr-2 toggle" id="nsfw-toggle">
+        }
+        <span class="h3 d-inline-block"> NSFW </span>
+    </div>
 }
-else
-{
-    @Model.Count.ToString()
-}
-</h2>
 
-@foreach (var article in Model)
+
+<div class="d-flex p-0">
+    <div class="d-inline-block pagination prev w-20">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-id="@(Model.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+        }
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        Page: @Model.Page.ToString()
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        From: @Model.TotalPages.ToString()
+    </div>
+    <div class="d-inline-block pagination next w-20">
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-id="@(Model.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+        }
+    </div>
+</div>
+
+@{
+    List<Article> articles;
+    if (Context.Request.Cookies.ContainsKey("nsfw-allow")
+        && Context.Request.Cookies["nsfw-allow"] == "true")
+    {
+        articles = Model.GetItems();
+    }
+    else
+    {
+        articles = Model.GetItems(c => 
+            c.Where(a => !a.Nsfw));
+    }
+    
+}
+
+@foreach (var article in articles)
 {
     var user = await _userManager.FindByIdAsync(article.AuthorId);
-    <div class="align-content-center container request-box">
-        <div class="container-fluid request-sender">
+    <div class="align-content-center container request-box article">
+        <div class="article-item container-fluid request-sender long">
             <b>Author:</b>
             «@(user.GetNameToShow() ?? "unknown user")»
         </div>
-        <div class="container-fluid request-field">
+        <div class="article-item container-fluid request-field long">
             <b>Tags: </b>
             @foreach (var tag in article.Tags)
             {
@@ -36,19 +89,43 @@ else
                 </a>
             }
         </div>
-        <div class="container-fluid request-field">
+        <div class="article-item container-fluid request-field long">
             <p class="h6"><b>Created:</b> @(article.CreatedAt.ToString())</p>
             @if (!string.IsNullOrEmpty(article.Location))
             {
                 <p class="h6"><b>At:</b> @(article.Location)</p>
             }
         </div>
-        <div class="container-fluid request-field">
+        <div class="article-item container-fluid request-field">
             <markdown>@article.Heading</markdown>
         </div>
-        <div class="container-fluid request-field">
+        <div class="article-item container-fluid request-field short">
             <markdown>@article.ShortDescription</markdown>
+        </div>
+        <div class="article-item container-fluid request-field long">
+            <markdown>@article.LongDescription</markdown>
         </div>
     </div>
 }
+
+<div class="d-flex p-0">
+    <div class="d-inline-block pagination prev w-20">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-id="@(Model.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+        }
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        Page: @Model.Page.ToString()
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        From: @Model.TotalPages.ToString()
+    </div>
+    <div class="d-inline-block pagination next w-20">
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-id="@(Model.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+        }
+    </div>
+</div>
 
