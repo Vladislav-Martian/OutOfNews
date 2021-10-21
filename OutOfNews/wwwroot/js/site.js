@@ -82,7 +82,9 @@ $(document).ready(function(){
         $(this).next(".da-hide").toggle();
     });
     
-    $(".article").click(function () {
+    
+    
+    $(".article").dblclick(function () {
         $(this).children(".short").toggle();
         $(this).children(".long").toggle();
     });

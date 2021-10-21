@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model AuthorDetailsViewModel
+@inject UserManager<User> _userManager
+
+@{
+    ViewBag.Title = Model.NickName + " [Author]";
+    
+    var articles = Model.PaginatedArticles.GetItems();
+}
+
+
+
+<h2>«@(Model.NickName)» author profile:</h2>
+<tr/>
+
+
+<div class="d-flex p-0">
+    <div class="d-inline-block pagination prev w-20">
+        @if (Model.PaginatedArticles.HasPreviousPage)
+        {
+            <a asp-action="Details" asp-route-id="@(Model.PaginatedArticles.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+        }
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        Page: @Model.PaginatedArticles.Page.ToString()
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        From: @Model.PaginatedArticles.TotalPages.ToString()
+    </div>
+    <div class="d-inline-block pagination next w-20">
+        @if (Model.PaginatedArticles.HasNextPage)
+        {
+            <a asp-action="Details" asp-route-id="@(Model.PaginatedArticles.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+        }
+    </div>
+</div>
+
+@foreach (var article in articles)
+{
+    var user = await _userManager.FindByIdAsync(article.AuthorId);
+    <div class="align-content-center container request-box article">
+        <div class="article-item container-fluid request-sender long">
+            <b>Author:</b>
+            «@(user.GetNameToShow() ?? "unknown user")»
+        </div>
+        <div class="article-item container-fluid request-field long">
+            <b>Tags: </b>
+            @foreach (var tag in article.Tags)
+            {
+                @*Filtered articles by tags*@
+                <a href="#">
+                    <p class="d-inline-block font-weight-bold">#@tag</p>
+                </a>
+            }
+        </div>
+        <div class="article-item container-fluid request-field long">
+            <p class="h6"><b>Created:</b> @(article.CreatedAt.ToString())</p>
+            @if (!string.IsNullOrEmpty(article.Location))
+            {
+                <p class="h6"><b>At:</b> @(article.Location)</p>
+            }
+        </div>
+        <div class="article-item container-fluid request-field">
+            <markdown>@article.Heading</markdown>
+        </div>
+        <div class="article-item container-fluid request-field short">
+            <markdown>@article.ShortDescription</markdown>
+        </div>
+        <div class="article-item container-fluid request-field long">
+            <markdown>@article.LongDescription</markdown>
+        </div>
+    </div>
+}
+
+
+<div class="d-flex p-0">
+    <div class="d-inline-block pagination prev w-20">
+        @if (Model.PaginatedArticles.HasPreviousPage)
+        {
+            <a asp-action="Details" asp-route-id="@(Model.PaginatedArticles.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+        }
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        Page: @Model.PaginatedArticles.Page.ToString()
+    </div>
+    <div class="d-inline-block pagination w-30 h3">
+        From: @Model.PaginatedArticles.TotalPages.ToString()
+    </div>
+    <div class="d-inline-block pagination next w-20">
+        @if (Model.PaginatedArticles.HasNextPage)
+        {
+            <a asp-action="Details" asp-route-id="@(Model.PaginatedArticles.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+        }
+    </div>
+</div>

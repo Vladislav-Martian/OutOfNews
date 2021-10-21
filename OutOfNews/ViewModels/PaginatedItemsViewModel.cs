@@ -11,6 +11,12 @@ namespace OutOfNews.ViewModels
         public int Page { get; set; }
         private int PageSize { get; set; }
         public int TotalPages { get; set; }
+        public delegate IQueryable<TItem> AdditionalLinq(IQueryable<TItem> items);
+        
+        /// <summary>
+        /// Applied every time on items access.
+        /// </summary>
+        public AdditionalLinq StaticFilters { get; set; } = null;
 
         public PaginatedItemsViewModel(IQueryable<TItem> source, int pageSize = 12)
         {
@@ -20,14 +26,20 @@ namespace OutOfNews.ViewModels
             PageSize = pageSize;
         }
 
-        public delegate IQueryable<TItem> AdditionalLinq(IQueryable<TItem> items);
-        
         public List<TItem> GetItems(AdditionalLinq adds = null)
         {
-            var tmp = Source.Skip((Page - 1) * PageSize).Take(PageSize);
+            var tmp = Source;
+            // before selecting use static-filters
+            if (StaticFilters != null)
+            {
+                tmp = StaticFilters.Invoke(tmp);
+            }
+            
+            tmp = tmp.Skip((Page - 1) * PageSize).Take(PageSize);
+            
             if (adds != null)
             {
-                return adds.Invoke(tmp).ToList();
+                tmp = adds.Invoke(tmp);
             }
             return tmp.ToList();
         }

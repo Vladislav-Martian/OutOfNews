@@ -305,9 +305,19 @@ a:active {
     transition: all .2s ease-in;
 }
 
+.auth-input.elongate {
+    min-width: 560px;
+}
+
 textarea.auth-input {
     min-width: 560px;
     min-height: 240px;
+    transition: all .4s ease-in;
+}
+
+textarea.auth-input.half {
+    min-width: 560px;
+    min-height: 120px;
     transition: all .4s ease-in;
 }
 
@@ -316,9 +326,22 @@ textarea.auth-input {
     transition: all .1s ease-in;
 }
 
+
+.auth-input.elongate:focus, .auth-input.elongate:hover {
+    min-width: 660px;
+    transition: all .1s ease-in;
+}
+
+
 textarea.auth-input:focus, textarea.auth-input:hover {
     min-width: 720px;
     min-height: 240px;
+    transition: all .5s ease-in;
+}
+
+textarea.auth-input.half:focus, textarea.auth-input.half:hover {
+    min-width: 720px;
+    min-height: 120px;
     transition: all .5s ease-in;
 }
 
