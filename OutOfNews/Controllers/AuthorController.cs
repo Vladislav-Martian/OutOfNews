@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using OutOfNews.Contexts;
 using OutOfNews.Extensions;
@@ -86,15 +87,14 @@ namespace OutOfNews.Controllers
                 if (ModelState.IsValid)
                 {
                     var article = model.Compile();
-                    var res1 = await _db.Articles.AddAsync(article);
-                    var res2 = await _db.SaveChangesAsync();
+                    await _db.Articles.AddAsync(article);
+                    await _db.SaveChangesAsync();
                     return RedirectToAction(nameof(Details));
                 }
                 return View(model);
             }
             catch (Exception e)
             {
-                throw;
                 ModelState.AddModelError("", e.Message);
                 return View(model);
             }
@@ -103,44 +103,80 @@ namespace OutOfNews.Controllers
         // GET: Author/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            User user = User.GetLoggedInUser(_userManager);
+            var article = _db.Articles.AsQueryable()
+                .Where(a => a.AuthorId == user.Id)
+                .FirstOrDefault(a => a.Id == id);
+            
+            if (article == null)
+            {
+                ModelState.AddModelError("", "Article don`t exists, or does not belong to you");
+                return View(null);
+            }
+            
+            var model = new EditArticleViewModel()
+            {
+                ArticleId = article.Id,
+                Location = article.Location,
+                Tags = string.Join(", ", article.Tags),
+                Nsfw = article.Nsfw,
+                Heading = article.Heading,
+                ShortDescription = article.ShortDescription,
+                LongDescription = article.LongDescription
+            };
+            return View(model);
         }
 
         // POST: Author/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, EditArticleViewModel model)
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    Article article = await _db.Articles.Where(a => a.Id == model.ArticleId).FirstAsync();
+                    article.Heading = model.Heading;
+                    article.ShortDescription = model.ShortDescription;
+                    article.LongDescription = model.LongDescription;
+                    article.CreatedAt = DateTime.Now;
+                    article.Nsfw = model.Nsfw;
+                    article.Location = model.Location;
+                    
+                    _db.Update(article);
+                    await _db.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(Details));
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                ModelState.AddModelError("", e.Message);
+                return View(model);
             }
         }
 
         // GET: Author/Delete/5
         [HttpGet]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var article = await _db.Articles.Where(a => a.Id == id)
+                .FirstOrDefaultAsync(a => a.AuthorId == User.GetLoggedInUserId<string>());
+            
+            return View("DeleteArticle", article);
         }
 
         // POST: Author/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteArticle(int id)
         {
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                _db.Articles.Remove(
+                    await _db.Articles.Where(a => a.Id == id).FirstOrDefaultAsync());
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Details));
             }
             catch
             {

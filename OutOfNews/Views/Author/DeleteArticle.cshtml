@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model Article
+@inject UserManager<User> _userManager
+
+@{
+    ViewBag.Title = "Delete my article";
+    var user = await _userManager.FindByIdAsync(Model.AuthorId);
+}
+
+<h2>Do you really want to delete this article?</h2>
+<a asp-controller="Author" asp-action="Edit" asp-route-id="@Model.Id.ToString()"><h3>Edit instead</h3></a>
+
+<br/>
+<tr/>
+
+<div class="align-content-center container request-box article">
+    <div class="article-item container-fluid request-sender long">
+        <b>Author:</b>
+        «@(user.GetNameToShow() ?? "unknown user")»
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <b>Tags: </b>
+        @foreach (var tag in Model.Tags)
+        {
+            @*Filtered articles by tags*@
+            <a href="#">
+                <p class="d-inline-block font-weight-bold">#@tag</p>
+            </a>
+        }
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <p class="h6"><b>Created:</b> @(Model.CreatedAt.ToString())</p>
+        @if (!string.IsNullOrEmpty(Model.Location))
+        {
+            <p class="h6"><b>At:</b> @(Model.Location)</p>
+        }
+    </div>
+    <div class="article-item container-fluid request-field">
+        <markdown>@Model.Heading</markdown>
+    </div>
+    <div class="article-item container-fluid request-field short">
+        <markdown>@Model.ShortDescription</markdown>
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <markdown>@Model.LongDescription</markdown>
+    </div>
+</div>
+
+<form method="post" asp-controller="Author" asp-action="DeleteArticle">
+    @*Hidden:*@
+    <div class="d-block">
+        <input type="hidden" name="id" value="@Model.Id.ToString()"/>
+    </div>
+    <div class="d-block">
+        <input type="submit" value="Delete article" class="btn-dark auth-submit"/>
+    </div>
+</form>
