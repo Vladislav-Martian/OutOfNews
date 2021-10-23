@@ -73,7 +73,7 @@ namespace OutOfNews
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
 
                 options.LoginPath = "/Auth/Login";
                 options.AccessDeniedPath = "/Auth/Login";
