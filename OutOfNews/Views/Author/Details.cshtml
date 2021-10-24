@@ -45,11 +45,11 @@
         {
             @* Edit button *@
             <a asp-controller="Author" asp-action="Edit" asp-route-id="@article.Id.ToString()">
-                <div class="btn-dark btn-outline-warning delete-request-button-2 border-4"></div>
+                <div title="Edit" class="btn-dark btn-outline-warning delete-request-button-2 border-4"></div>
             </a>
             @* Delete button *@
             <a asp-controller="Author" asp-action="Delete" asp-route-id="@article.Id.ToString()">
-                <div class="btn-dark btn-outline-danger delete-request-button border-4"></div>
+                <div title="Remove" class="btn-dark btn-outline-danger delete-request-button border-4"></div>
             </a>
         }
         

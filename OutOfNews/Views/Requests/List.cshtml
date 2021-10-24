@@ -51,7 +51,7 @@ else
         {
             <div class="container-fluid request-field">
                 <form asp-controller="Auth" asp-action="ChangeRole" class="w-100">
-                    <input name="userId" type="hidden" value="@(User.GetLoggedInUserId<string>())"/>
+                    <input name="userId" type="hidden" value="@(request.UserId)"/>
                     <select name="role">
                         <option value="reader">reader</option>
                         <option value="author">author</option>

@@ -34,7 +34,7 @@ namespace OutOfNews.Controllers
         
         
         // GET: Author
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             return RedirectToAction(nameof(Details));
         }

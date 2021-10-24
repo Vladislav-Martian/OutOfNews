@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OutOfNews.Contexts;
 using OutOfNews.Extensions;
 using OutOfNews.Models;
 using OutOfNews.ViewModels;
@@ -18,16 +22,21 @@ namespace OutOfNews.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration Config;
+        private readonly IUserClaimsPrincipalFactory<User> _principalFactory;
+        private readonly IConfiguration _config;
+        private readonly AppDbContext _db;
         public AuthController(UserManager<User> userManager, 
             SignInManager<User> signInManager, 
             RoleManager<IdentityRole> roleManager,
-            IConfiguration config)
+            IConfiguration config, 
+            IUserClaimsPrincipalFactory<User> principalFactory, AppDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            Config = config;
+            _config = config;
+            _principalFactory = principalFactory;
+            _db = db;
         }
         #endregion
         #region Authentication center
@@ -62,7 +71,7 @@ namespace OutOfNews.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Config["Roles:DefaultRole"]);
+                    await _userManager.AddToRoleAsync(user, _config["Roles:DefaultRole"]);
                     // set cookie
                     await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
@@ -171,6 +180,14 @@ namespace OutOfNews.Controllers
             var user = User.GetLoggedInUser(_userManager);
             await _signInManager.SignOutAsync();
             await _userManager.DeleteAsync(user);
+            // delete all account
+            var articles = _db.Articles
+                .AsQueryable()
+                .Where(a => a.AuthorId == user.Id)
+                .ToList();
+            _db.RemoveRange(articles);
+            await _db.SaveChangesAsync();
+            // already deleted
             return RedirectToAction("Index", "Home");
         }
 
@@ -285,6 +302,11 @@ namespace OutOfNews.Controllers
 
             User user = await _userManager.FindByIdAsync(userId);
             await _userManager.AddToRoleAsync(user, role);
+
+            var claimsPrincipal = await _principalFactory.CreateAsync(user);
+            ((ClaimsIdentity) claimsPrincipal.Identity)?.AddClaim(new Claim("user_id", user.Id.ToString()));
+
+            await HttpContext.SignInAsync(claimsPrincipal, new AuthenticationProperties() { IsPersistent = true });
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
