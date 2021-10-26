@@ -101,7 +101,7 @@ namespace OutOfNews.Controllers
         }
 
         // GET: Author/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit([FromRoute]int id)
         {
             User user = User.GetLoggedInUser(_userManager);
             var article = _db.Articles.AsQueryable()

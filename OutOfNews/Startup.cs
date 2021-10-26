@@ -32,7 +32,7 @@ namespace OutOfNews
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation(); // TODO: Remove runtime compilation
+            services.AddControllersWithViews();
             
             services.AddDbContext<AuthDbContext>(options =>
             {
@@ -113,7 +113,11 @@ namespace OutOfNews
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id:int?}");
+            
+            endpoints.MapControllerRoute(
+                "search",
+                "{controller}/{action}/{tag}/{id:int?}");
         }
     }
 }

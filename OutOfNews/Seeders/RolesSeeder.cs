@@ -45,7 +45,6 @@ namespace OutOfNews.Seeders
 
             if (await userManager.FindByEmailAsync("admin@nomail.com") == null)
             {
-                //TODO: Remove admin account seed
                 User admin = new User
                 {
                     Email = "admin@nomail.com", 

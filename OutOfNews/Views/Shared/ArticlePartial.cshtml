@@ -1,0 +1,55 @@
+﻿@using OutOfNews.Extensions
+@using System.Globalization
+@model (Article article, User author)
+
+@{
+    var article = Model.article;
+    var user = Model.author;
+}
+
+<div class="align-content-center container request-box article">
+    
+    @if (User.GetLoggedInUserId<string>() == article.AuthorId)
+    {
+        @* Edit button *@
+        <a asp-controller="Author" asp-action="Edit" asp-route-id="@article.Id.ToString()">
+            <div title="Edit" class="btn-dark btn-outline-warning delete-request-button-2 border-4"></div>
+        </a>
+        @* Delete button *@
+        <a asp-controller="Author" asp-action="Delete" asp-route-id="@article.Id.ToString()">
+            <div title="Remove" class="btn-dark btn-outline-danger delete-request-button border-4"></div>
+        </a>
+    }
+
+    <div class="article-item container-fluid request-sender long">
+        <b>Author:</b>
+        «@(user?.GetNameToShow() ?? "unknown user")»
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <b>Tags: </b>
+        @foreach (var tag in article.Tags)
+        {
+            @*Filtered articles by tags*@
+            <a asp-controller="Filtered" asp-action="Tagged" asp-route-tag="@tag" >
+                <p class="d-inline-block font-weight-bold">#@tag</p>
+            </a>
+        }
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <p class="h6"><b>Created:</b> @article.CreatedAt.ToString(CultureInfo.InvariantCulture)
+        </p>
+        @if (!string.IsNullOrEmpty(article.Location))
+        {
+            <p class="h6"><b>At:</b> @(article.Location)</p>
+        }
+    </div>
+    <div class="article-item container-fluid request-field">
+        <markdown>@article.Heading</markdown>
+    </div>
+    <div class="article-item container-fluid request-field short">
+        <markdown>@article.ShortDescription</markdown>
+    </div>
+    <div class="article-item container-fluid request-field long">
+        <markdown>@article.LongDescription</markdown>
+    </div>
+</div>
