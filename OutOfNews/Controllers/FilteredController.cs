@@ -34,5 +34,23 @@ namespace OutOfNews.Controllers
 
             return View("SearchResult", model);
         }
+        
+        // Get: 
+        public IActionResult Search(string tag, int id = 1)
+        {
+            var source = _db.Articles.AsQueryable();
+            // prepare model
+            var model = new PaginatedItemsViewModel<Article>(source, 12)
+            {
+                Page = id,
+                StaticFilters = (s) =>
+                {
+                    return s.Where(a => a.Heading.ToLower().Contains(tag.ToLower()));
+                }
+            };
+
+            return View("SearchResult", model);
+        }
+        
     }
 }

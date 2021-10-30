@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Routing
 @using Microsoft.Extensions.Configuration
 @using OutOfNews.Extensions
+@using RouteData = Microsoft.AspNetCore.Components.RouteData
 
 @inject IConfiguration Configuration
 @inject UserManager<User> _userManager
@@ -11,9 +12,25 @@
 @{
     ViewBag.Title = "Search result";
     
+    var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["Action"]?.ToString();
+    
     var allows = (User.Identity?.IsAuthenticated ?? false) && User.GetLoggedInUser(_userManager)
         .IsAdult(int.Parse(Configuration["Restrictions:NSFWAge"]),
                     bool.Parse(Configuration["Restrictions:UnauthorizedAdult"]));
+
+    var query = ViewContext.HttpContext.Request.Query;
+    
+    var routedataprev = new Dictionary<string, string>
+    {
+        { "id", (Model.Page - 1).ToString()},
+        { "tag", query["tag"].ToString() }
+    };
+    var routedatanext = new Dictionary<string, string>
+    {
+        { "id", (Model.Page + 1).ToString()},
+        { "tag", query["tag"].ToString() }
+    };
 }
 
 <h2>Search results:</h2>
@@ -42,7 +59,9 @@
     <div class="d-inline-block pagination prev w-20">
         @if (Model.HasPreviousPage)
         {
-            <a asp-action="Tagged" asp-route-tag="@(Context.GetRouteValue("tag")?.ToString())" asp-route-id="@(Model.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+            <a asp-action="@action" 
+               asp-all-route-data="routedataprev"
+               class="h3 d-inline-block pagination-link">Previous page</a>
         }
     </div>
     <div class="d-inline-block pagination w-30 h3">
@@ -54,7 +73,9 @@
     <div class="d-inline-block pagination next w-20">
         @if (Model.HasNextPage)
         {
-            <a asp-action="Tagged" asp-route-tag="@(Context.GetRouteValue("tag")?.ToString())" asp-route-id="@(Model.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+            <a asp-action="@action" 
+               asp-all-route-data="routedatanext"
+               class="h3 d-inline-block pagination-link">Next page</a>
         }
     </div>
 </div>
@@ -78,13 +99,16 @@
 {
     var user = await _userManager.FindByIdAsync(article.AuthorId);
     @(await Html.PartialAsync("ArticlePartial", (article, user)))
+    
 }
 
 <div class="d-flex p-0">
     <div class="d-inline-block pagination prev w-20">
         @if (Model.HasPreviousPage)
         {
-            <a asp-action="Tagged" asp-route-tag="@(Context.GetRouteValue("tag")?.ToString())" asp-route-id="@(Model.Page - 1)" class="h3 d-inline-block pagination-link">Previous page</a>
+            <a asp-action="@action" 
+               asp-all-route-data="routedataprev"
+               class="h3 d-inline-block pagination-link">Previous page</a>
         }
     </div>
     <div class="d-inline-block pagination w-30 h3">
@@ -96,7 +120,9 @@
     <div class="d-inline-block pagination next w-20">
         @if (Model.HasNextPage)
         {
-            <a asp-action="Tagged" asp-route-tag="@(Context.GetRouteValue("tag")?.ToString())" asp-route-id="@(Model.Page + 1)" class="h3 d-inline-block pagination-link">Next page</a>
+            <a asp-action="@action" 
+               asp-all-route-data="routedatanext"
+               class="h3 d-inline-block pagination-link">Next page</a>
         }
     </div>
 </div>

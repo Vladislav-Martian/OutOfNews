@@ -19,7 +19,19 @@
         <a asp-controller="Author" asp-action="Delete" asp-route-id="@article.Id.ToString()">
             <div title="Remove" class="btn-dark btn-outline-danger delete-request-button border-4"></div>
         </a>
+    } 
+    else if (User.IsInRole("moder") || User.IsInRole("admin"))
+    {
+        @* Edit button *@
+        <a asp-controller="Moderation" asp-action="Edit" asp-route-id="@article.Id.ToString()">
+            <div title="Edit" class="btn-dark btn-outline-warning delete-request-button-2 border-4"></div>
+        </a>
+        @* Delete button *@
+        <a asp-controller="Moderation" asp-action="Delete" asp-route-id="@article.Id.ToString()">
+            <div title="Remove" class="btn-dark btn-outline-danger delete-request-button border-4"></div>
+        </a>
     }
+    
 
     <div class="article-item container-fluid request-sender long">
         <b>Author:</b>

@@ -1,0 +1,56 @@
+﻿@model EditArticleViewModel
+
+@{
+    ViewBag.Title = "Edit Article";
+}
+
+<h2>Edit Article:</h2>
+<hr/>
+<form method="post" asp-controller="Moderation" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Heading" class="auth-label"></label><br/>
+        <input asp-for="Heading" class="auth-input elongate" value="@Model.Heading"/>
+        <span asp-validation-for="Heading"></span>
+    </div>
+    <div>
+        <label asp-for="Location" class="auth-label"></label><br/>
+        <input asp-for="Location" class="auth-input elongate" value="@Model.Location"/>
+        <span asp-validation-for="Location"></span>
+    </div>
+    <div>
+        <label asp-for="Tags" class="auth-label"></label><br/>
+        <input asp-for="Tags" class="auth-input" value="@Model.Tags"/>
+        <span asp-validation-for="Tags"></span>
+    </div>
+    <div class="d-block">
+        <span class="switch">
+            <label asp-for="Nsfw" class="auth-label"></label><br/>
+            @if (Model.Nsfw)
+            {
+                <input asp-for="Nsfw" class="toggle" checked/>
+            }
+            else
+            {
+                <input asp-for="Nsfw" class="toggle"/>
+            }
+        </span>
+    </div>
+    <div>
+        <label asp-for="ShortDescription" class="auth-label"></label><br/>
+        <textarea asp-for="ShortDescription" class="auth-input half"></textarea>
+        <span asp-validation-for="ShortDescription"></span>
+    </div>
+    <div>
+        <label asp-for="LongDescription" class="auth-label"></label><br/>
+        <textarea asp-for="LongDescription" class="auth-input"></textarea>
+        <span asp-validation-for="LongDescription"></span>
+    </div>
+    @*Hidden:*@
+    <div class="d-block">
+        <input type="hidden" asp-for="ArticleId" value="@Model.ArticleId"/>
+    </div>
+    <div class="d-block">
+        <input type="submit" value="Edit article" class="btn-dark auth-submit"/>
+    </div>
+</form>
