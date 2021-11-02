@@ -35,7 +35,7 @@ else
 
         <div class="container-fluid request-sender">
             <b>Sent by:</b>
-            «@(user.GetNameToShow() ?? "unknown user")» : «@(user.Email ?? "unknown email")»
+            «@(user?.GetNameToShow() ?? "unknown user")» : «@(user?.Email ?? "unknown email")»
         </div>
         <div class="container-fluid request-field">
             <p class="h6">Date: @request.CreatedAt.ToString() // Type: @request.RequestVariant.GetType().GetEnumName(request.RequestVariant)</p>
