@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="180"
+   height="180"
+   viewBox="0 0 180 180"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="OON.svg"
+   inkscape:export-filename="C:\Users\Vlad Martian\Desktop\OON.png"
+   inkscape:export-xdpi="273.06668"
+   inkscape:export-ydpi="273.06668"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title4338">OutOfNews</title>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:snap-global="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-page="true"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-grids="true"
+     inkscape:zoom="2.3111111"
+     inkscape:cx="61.658654"
+     inkscape:cy="76.802885"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="90,90"
+       orientation="-1,0"
+       id="guide111"
+       inkscape:label=""
+       inkscape:locked="false"
+       inkscape:color="rgb(0,0,255)" />
+    <sodipodi:guide
+       position="90,90"
+       orientation="0,-1"
+       id="guide113" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid717" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;fill:context-stroke;stroke:context-stroke;stroke-width:1.0pt;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path2329" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <g
+       id="g3139"
+       transform="matrix(1,0,0,-1,0,180)"
+       style="stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke">
+      <path
+         id="path503"
+         style="fill:#2c2f33;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
+         inkscape:transform-center-x="0.16166728"
+         inkscape:transform-center-y="-5.8580125"
+         d="M 12.058594,45 90,180 167.94141,45 H 141.96094 L 90,135 38.039062,45 Z" />
+      <path
+         id="path503-6"
+         style="display:inline;fill:#99aab5;fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
+         inkscape:transform-center-x="0.16166728"
+         inkscape:transform-center-y="-5.8580125"
+         d="M 12.058594,25 90,160 167.94141,25 h -14.4336 L 90,135 26.492188,25 Z" />
+    </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3139"
+       id="use3141"
+       transform="matrix(1,0,0,-1,0,180)"
+       width="100%"
+       height="100%"
+       style="stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke" />
+    <g
+       id="g3406"
+       style="fill:#7289da;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke">
+      <path
+         sodipodi:type="star"
+         style="fill:#7289da;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
+         id="path3320"
+         inkscape:flatsided="true"
+         sodipodi:sides="3"
+         sodipodi:cx="90"
+         sodipodi:cy="95"
+         sodipodi:r1="10"
+         sodipodi:r2="5"
+         sodipodi:arg1="1.5707963"
+         sodipodi:arg2="2.6179939"
+         inkscape:rounded="0"
+         inkscape:randomized="0"
+         d="M 90,105 81.339746,90 98.660254,90 Z"
+         inkscape:transform-center-y="2.5" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#path3320"
+         inkscape:transform-center-y="-2.4999998"
+         id="use3402"
+         transform="matrix(1,0,0,-1,1.3397448e-7,180)"
+         width="100%"
+         height="100%"
+         style="fill:#7289da;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke" />
+    </g>
+  </g>
+  <metadata
+     id="metadata4336">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>OutOfNews</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
